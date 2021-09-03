@@ -9,8 +9,9 @@ const int POT1 = A0;
 
 /*
    @variable int[] LEDS specifies pins that are LEDs attached to
+   IN THIS CASE ONLY PWM PINS
 */
-const int LEDS [] = {2, 3, 4};
+const int LEDS [] = {3, 5, 6};
 
 /*
    @variable int NumberOfLeds
@@ -35,8 +36,8 @@ void setup() {
   Serial.begin(9600);
 
   // Tell the arduino what to do on certain pins
-  for(int i = 0; i < NumberOfLeds; i++){
-      pinMode(LEDS[i], INPUT);
+  for (int i = 0; i < NumberOfLeds; i++) {
+    pinMode(LEDS[i], INPUT);
   }
 
   initializeLEDs(100, 5);
@@ -54,13 +55,20 @@ void loop() {
    @param int analogInput value of analog input
 */
 void lightingBasedOnPot(int numberOfLeds, float analogInput) {
+
+// TODO:
   for (int i = 0; i < numberOfLeds; i++) {
     if (analogInput >= LEDsBreakPoints[i]) {
       digitalWrite(LEDS[i], HIGH);
+    } else if (analogInput > LEDsBreakPoints[i - 1]) {
+
+      int mapped = map(analogInput, 0, 1024, 0, 200);
+      analogWrite(LEDS[i], mapped);
     } else {
       digitalWrite(LEDS[i], LOW);
     }
   }
+
 }
 
 /**
